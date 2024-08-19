@@ -109,3 +109,7 @@ extension Weather: WeatherProtocol {
     }
     
 }
+
+struct CustomError: Error {
+    let message: String
+}

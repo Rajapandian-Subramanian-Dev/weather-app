@@ -9,5 +9,4 @@ import UIKit
 
 class SearchResultsTableViewCell: UITableViewCell {
     @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var locationImage: UIImageView!
 }

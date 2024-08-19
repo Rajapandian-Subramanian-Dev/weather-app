@@ -8,35 +8,18 @@
 import Foundation
 import CoreLocation
 
-protocol LocationMangerProtocol {
-    var locationQuery: String { get set }
-    var userCoordinate: CLLocationCoordinate2D { get set }
-
-    func updateUserLocation(coordinate: CLLocationCoordinate2D)
-    func updateUserQuery(searchString: String)
-}
-
 protocol WeatherModelProtocol {
+    var locationQuery: String { get set }
+    var searchQueryParams: [String: String] { get set }
     func updateUserLocation(coordinate: CLLocationCoordinate2D)
     func updateUserQuery(searchString: String)
+    func updateUserQuery(searchParams: [String: String])
     func getWeather(completed: @escaping (_ weather: WeatherProtocol?) -> Void)
 }
 
-class LocationManger: LocationMangerProtocol {
-    var locationQuery = String()
-    var userCoordinate = kCLLocationCoordinate2DInvalid
-
-    func updateUserLocation(coordinate: CLLocationCoordinate2D) {
-        self.userCoordinate = coordinate
-    }
-    
-    func updateUserQuery(searchString: String) {
-        self.locationQuery = searchString
-    }
-}
-
 class WeatherViewModel: WeatherModelProtocol {
-    
+    var locationQuery = String()
+    var searchQueryParams = [String: String]()
     let locationManager: LocationMangerProtocol
     let weatherRepository : WeatherRepoProtocol
     
@@ -50,12 +33,17 @@ class WeatherViewModel: WeatherModelProtocol {
     }
     
     func updateUserQuery(searchString: String) {
-        locationManager.updateUserQuery(searchString: searchString)
+        searchQueryParams = [:]
+        locationQuery = searchString
+    }
+    
+    func updateUserQuery(searchParams: [String : String]) {
+        locationQuery = ""
+        searchQueryParams = searchParams
     }
     
     func getWeather(completed: @escaping (WeatherProtocol?) -> Void) {
         let queryString = getSearchQueryParams()
-        print("queryString: \(queryString)")
         guard !queryString.isEmpty else {
             completed(nil)
             return
@@ -72,11 +60,13 @@ class WeatherViewModel: WeatherModelProtocol {
     
     private func getSearchQueryParams() -> String {
         var params = [String: String]()
-        if locationManager.locationQuery.isEmpty, CLLocationCoordinate2DIsValid(locationManager.userCoordinate){
+        if !searchQueryParams.isEmpty {
+            params = searchQueryParams
+        } else if locationQuery.isEmpty, CLLocationCoordinate2DIsValid(locationManager.userCoordinate){
             params = ["lat": String(format: "%.4f", locationManager.userCoordinate.latitude),
                           "lon": String(format: "%.4f", locationManager.userCoordinate.longitude)]
-        } else if !locationManager.locationQuery.isEmpty {
-            params = ["q": locationManager.locationQuery]
+        } else if !locationQuery.isEmpty {
+            params = ["q": locationQuery]
         } else if let lastKnownRequest = getLastWeatherRequestInfo() {
             params = lastKnownRequest
         }
@@ -97,4 +87,3 @@ class WeatherViewModel: WeatherModelProtocol {
         UserDefaults.standard.dictionary(forKey: "lastKnownQuery") as? [String: String]
     }
 }
-
