@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 
+// protocol abstraction for weather repository managing the service calls, helps writing modular and testable code
 protocol WeatherRepoProtocol {
     func fetchWeatherInfo(queryString: String, completed: @escaping (_ result: Result<Weather, CustomError>) -> Void)
 }
@@ -16,6 +17,7 @@ class WeatherRepository: WeatherRepoProtocol {
     // This goes to config file
     let weatherApi = "https://api.openweathermap.org/data/2.5/weather?%@&appid=eb69b58c06634a5289dcdf6af8097077&units=imperial"
     
+    /// Fetches weather data for a given location.
     func fetchWeatherInfo(queryString: String, completed: @escaping (Result<Weather, CustomError>) -> Void) {
        guard let url = URL(string: String(format: weatherApi, queryString)) else {
             /// invalid URL

@@ -1,0 +1,44 @@
+{
+  "coord": {
+    "lon": -104.7839,
+    "lat": 326.4977
+  },
+  "weather": [
+    {
+      "id": 800,
+      "main": "Clear",
+      "description": "clear sky",
+      "icon": "01d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 85.5,
+    "feels_like": 75,
+    "temp_min": 101.5,
+    "temp_max": 101.5,
+    "pressure": 1012,
+    "humidity": 12,
+    "sea_level": 1012,
+    "grnd_level": 898
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 9.08,
+    "deg": 186,
+    "gust": 8.75
+  },
+  "clouds": {
+    "all": 4
+  },
+  "dt": 1724100032,
+  "sys": {
+    "country": "US",
+    "sunrise": 1724069317,
+    "sunset": 1724117579
+  },
+  "timezone": -18000,
+  "id": 5515734,
+  "name": "Plano",
+  "cod": 200
+}

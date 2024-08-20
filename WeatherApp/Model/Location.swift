@@ -16,7 +16,7 @@ struct Location: Codable {
 extension Location {
     
     var locationDetail: String {
-        return [name, country, state].compactMap({$0}).joined(separator: ",")
+        return [name, state, country].compactMap({$0}).joined(separator: ", ")
     }
 
     var searchQueryParams: [String: String] {

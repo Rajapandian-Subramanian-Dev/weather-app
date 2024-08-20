@@ -8,14 +8,15 @@
 import Foundation
 import CoreLocation
 
+// protocol abstraction for weather model, helps writing modular and testable code
 protocol WeatherModelProtocol {
     var locationQuery: String { get set }
     var searchQueryParams: [String: String] { get set }
     func updateUserLocation(coordinate: CLLocationCoordinate2D)
-    func updateUserQuery(searchString: String)
     func updateUserQuery(searchParams: [String: String])
     func getWeather(completed: @escaping (_ weather: WeatherProtocol?) -> Void)
 }
+
 
 class WeatherViewModel: WeatherModelProtocol {
     var locationQuery = String()
@@ -32,16 +33,12 @@ class WeatherViewModel: WeatherModelProtocol {
         locationManager.updateUserLocation(coordinate: coordinate)
     }
     
-    func updateUserQuery(searchString: String) {
-        searchQueryParams = [:]
-        locationQuery = searchString
-    }
-    
     func updateUserQuery(searchParams: [String : String]) {
         locationQuery = ""
         searchQueryParams = searchParams
     }
     
+    /// Get weather info from the openweather api
     func getWeather(completed: @escaping (WeatherProtocol?) -> Void) {
         let queryString = getSearchQueryParams()
         guard !queryString.isEmpty else {
@@ -58,7 +55,8 @@ class WeatherViewModel: WeatherModelProtocol {
         }
     }
     
-    private func getSearchQueryParams() -> String {
+    // Get final query string data for the api call. Returns the query string data based on the currently available data on the view model
+    func getSearchQueryParams() -> String {
         var params = [String: String]()
         if !searchQueryParams.isEmpty {
             params = searchQueryParams

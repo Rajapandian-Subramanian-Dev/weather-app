@@ -23,25 +23,26 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var locationInfoLabel: UILabel!
 
-    // Search View
+    /// Search View
     @IBOutlet weak var searchParentView: UIView!
     @IBOutlet weak var tableview: UITableView!
     @IBOutlet weak var searchTextField: UITextField!
 
-
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        /// Initialize and request for location access
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.requestLocation()
         
-        // Observer search text changes
         searchTextField.placeholder = "Search for a city"
+        /// Observer search text changes
         searchTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
     
+    /// Get weather info from the openweather api
     private func getWeather() {
         infoLabel.isHidden = true
         activityIndicatorView.startAnimating()
@@ -60,6 +61,7 @@ class HomeViewController: UIViewController {
         }
     }
     
+    /// Setup weather details on the UI
     private func updateWeatherDetails(weather: WeatherProtocol, selectedLocation: Location?) {
         tempUnit.isHidden = false
         locationLabel.text = weather.location.capitalized
@@ -71,12 +73,14 @@ class HomeViewController: UIViewController {
         }
     }
     
+    /// Toggle b/w the search view and weather view
     @IBAction func toggleSearchView(_ sender: Any) {
         infoLabel.isHidden = true
         searchParentView.isHidden = !searchParentView.isHidden
     }
 }
 
+/// Core location delegate
 extension HomeViewController: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .authorizedWhenInUse {
@@ -85,7 +89,6 @@ extension HomeViewController: CLLocationManagerDelegate {
             showAlert(text: "Location access is required to display weather based on your current location. Please enable location access for the Weather app in your iPhone Settings OR Search locations using search button")
         }
     }
-
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
@@ -100,6 +103,7 @@ extension HomeViewController: CLLocationManagerDelegate {
     }
 }
 
+/// Table delegate for handling the location search results
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return locationSearchManager.searchLocationsList.count
@@ -143,6 +147,7 @@ extension HomeViewController: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text, text.count >= 2 else { return }
         // TODO: Cancelling in-flight api calls before initiating new API call
+        // Get location list for the search query(Geocode)
         locationSearchManager.getLocation(forSearch: text) { [weak self] completed, error in
             DispatchQueue.main.async {
                 self?.tableview.reloadData()

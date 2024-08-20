@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol WeatherProtocol {
+protocol WeatherProtocol: Codable {
     var location: String { get }
     var temp: String { get }
     var feelsLike: String { get }

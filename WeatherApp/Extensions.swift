@@ -30,6 +30,7 @@ extension UIImageView {
 }
 
 extension Array {
+    /// To access array safely. handles out of bounds access
     public subscript(safeIndex index: Int) -> Element? {
         guard index >= 0, index < endIndex else {
             return nil

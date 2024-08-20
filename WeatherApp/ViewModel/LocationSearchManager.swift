@@ -7,6 +7,7 @@
 
 import Foundation
 
+// protocol abstraction for location search, helps writing modular and testable code
 protocol LocationSearchProtocol {
     var locationQuery: String { get set }
     var selectedLocation: Location? { get set }
@@ -52,7 +53,6 @@ extension LocationSearchManager {
                  self?.searchLocationsList = try jsonDecoder.decode([Location].self, from: responseData)
                  completed(true, nil)
              } catch {
-                 // Request failed
                  completed(false, CustomError(message: error.localizedDescription))
              }
          }
