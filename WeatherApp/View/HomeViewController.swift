@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import SDWebImage
 
 class HomeViewController: UIViewController {
     let weatherModel = WeatherViewModel(locationManager: LocationManger(), weatherRepository: WeatherRepository())
@@ -44,6 +45,7 @@ class HomeViewController: UIViewController {
     
     /// Get weather info from the openweather api
     private func getWeather() {
+        tempImage.sd_imageIndicator = nil
         infoLabel.isHidden = true
         activityIndicatorView.startAnimating()
         weatherModel.getWeather { [weak self] weather in
@@ -69,7 +71,8 @@ class HomeViewController: UIViewController {
         tempDescriptionLabel.text = weather.tempDescription.capitalized
         locationInfoLabel.text = selectedLocation?.locationDetail.capitalized
         if let iconURL = weather.iconURL {
-            tempImage.load(url: iconURL)
+            tempImage.sd_imageIndicator = SDWebImageActivityIndicator.gray
+            tempImage.sd_setImage(with: iconURL)
         }
     }
     
